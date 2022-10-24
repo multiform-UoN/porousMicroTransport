@@ -11,7 +11,7 @@ forAll(composition.Y(), speciesi)
     {
             fvm::ddt(Rd*theta, C)
           + fvm::div(phi, C, "div(phi,C)")
-          - fvm::laplacian(theta*Deff, C, "laplacian(Deff,C)")
+          - fvm::laplacian(theta*Deff/Rd, C, "laplacian(Deff,C)")
         ==
             Rd*theta*R
           + theta*fvOptions(C)
