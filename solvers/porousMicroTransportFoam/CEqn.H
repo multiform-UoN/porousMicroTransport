@@ -4,15 +4,16 @@ forAll(composition.Y(), speciesi)
 {
     auto& C = composition.Y(speciesi);
     auto Deff = composition.Deff(speciesi, U, theta);
+    volScalarField Rd{composition.retardation(speciesi, theta)};
     const auto& R = reactions.reactionTerm(speciesi);
 
     fvScalarMatrix CEqn
     {
-            fvm::ddt(theta, C)
+            fvm::ddt(Rd*theta, C)
           + fvm::div(phi, C, "div(phi,C)")
           - fvm::laplacian(theta*Deff, C, "laplacian(Deff,C)")
         ==
-            theta*R
+            Rd*theta*R
           + theta*fvOptions(C)
     };
 

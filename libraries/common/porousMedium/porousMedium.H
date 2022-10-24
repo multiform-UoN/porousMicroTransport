@@ -24,6 +24,8 @@ public:
 
     const volScalarField& K() const;
 
+    const volScalarField& rs() const;
+
     porousMedium(const porousMedium&) = delete;
     void operator=(const porousMedium&) = delete;
 
@@ -31,6 +33,7 @@ private:
     const fvMesh& mesh_;
     autoPtr<volScalarField> eps_;
     autoPtr<volScalarField> K_;
+    autoPtr<volScalarField> rs_;
 };
 
 }

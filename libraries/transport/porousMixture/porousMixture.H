@@ -42,7 +42,15 @@ public:
         const phaseFractionField& frac
     );
 
+    tmp<volScalarField> retardation
+    (
+        label speciesi,
+        const phaseFractionField& frac
+    ) const;
+
 private:
+    const porousMedium& medium_;
+    List<dimensionedScalar> Kd_;
     PtrList<dispersionModel> dispersionModels_;
 };
 

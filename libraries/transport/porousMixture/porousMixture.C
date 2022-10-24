@@ -28,6 +28,8 @@ Foam::Pmt::porousMixture::porousMixture
         medium.mesh(),
         word::null
     },
+    medium_{medium},
+    Kd_(Y().size()),
     dispersionModels_(Y().size())
 {
     forAll(species(), speciesi)
@@ -38,6 +40,20 @@ Foam::Pmt::porousMixture::porousMixture
 
         const auto& speciesTransport =
             transportProperties.optionalSubDict(speciesName);
+
+        const auto& porousTransport
+            = speciesTransport.optionalSubDict("porousTransport");
+
+        Kd_[speciesi].dimensions().reset(dimless/dimDensity);
+        Kd_[speciesi] = dimensionedScalar::getOrDefault
+            (
+                "Kd",
+                porousTransport,
+                dimless/dimDensity
+            );
+
+        Info<< "Kd = " << Kd_[speciesi].value() << nl
+            << endl;
 
         dimensionedScalar Dm{"Dm", dimViscosity, speciesTransport};
 

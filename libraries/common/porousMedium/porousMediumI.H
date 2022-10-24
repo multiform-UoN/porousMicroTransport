@@ -27,3 +27,15 @@ inline const Foam::volScalarField& Foam::Pmt::porousMedium::K() const
 
     return *K_;
 }
+
+inline const Foam::volScalarField& Foam::Pmt::porousMedium::rs() const
+{
+    if (!rs_)
+    {
+        FatalErrorInFunction
+            << "Bulk density (rs) required but not set" << endl
+            << exit(FatalError);
+    }
+
+    return *rs_;
+}
