@@ -10,7 +10,7 @@
 
 Foam::Pmt::reactions::reactions
 (
-    const basicMultiComponentMixture& composition,
+    const porousMixture& composition,
     const dictionary& transportProperties
 )
 :
@@ -120,17 +120,17 @@ Foam::Pmt::reactions::reactions
     }
 {}
 
-void Foam::Pmt::reactions::correct()
+void Foam::Pmt::reactions::correct(const phaseFractionField& frac)
 {
     clearTerms();
 
     for (const auto& reaction : reactions_)
     {
-        setReactionRate(reaction.lhs, reaction.rhs, reaction.kf);
+        setReactionRate(reaction.lhs, reaction.rhs, reaction.kf, frac);
 
         if (reaction.kr != 0)
         {
-            setReactionRate(reaction.rhs, reaction.lhs, reaction.kr);
+            setReactionRate(reaction.rhs, reaction.lhs, reaction.kr, frac);
         }
     }
 }
@@ -147,7 +147,8 @@ void Foam::Pmt::reactions::setReactionRate
 (
     const List<speciesCoeffs>& lhs,
     const List<speciesCoeffs>& rhs,
-    scalar k
+    scalar k,
+    const phaseFractionField& frac
 )
 {
     auto tReactionRate = volScalarField::New
@@ -163,8 +164,10 @@ void Foam::Pmt::reactions::setReactionRate
     {
         const auto& Y = composition_.Y(sc.index);
         const auto& dimY = Y.dimensions();
+        
+        auto Rd = composition_.retardation(sc.index, frac);
 
-        reactionRate *= pow(Y/dimensionedScalar{dimY, One}, sc.exponent);
+        reactionRate *= pow(Rd*Y/dimensionedScalar{dimY, One}, sc.exponent);
     }
 
     for (const auto& sc : lhs)

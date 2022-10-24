@@ -1,4 +1,4 @@
-reactions.correct();
+reactions.correct(theta);
 
 forAll(composition.Y(), speciesi)
 {

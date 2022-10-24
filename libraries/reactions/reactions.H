@@ -2,8 +2,9 @@
 #define PMT_reactions_H
 
 #include "speciesCoeffs.H"
+#include "porousMixture.H"
+#include "phaseFractionFieldFwd.H"
 
-#include <basicMultiComponentMixture.H>
 #include <volFieldsFwd.H>
 #include <label.H>
 #include <PtrList.H>
@@ -22,11 +23,11 @@ class reactions
 public:
     reactions
     (
-        const basicMultiComponentMixture& composition,
+        const porousMixture& composition,
         const dictionary& transportProperties
     );
 
-    void correct();
+    void correct(const phaseFractionField& frac);
 
     const volScalarField& reactionTerm(label speciesi) const;
 
@@ -42,7 +43,7 @@ private:
         scalar kr;
     };
 
-    const basicMultiComponentMixture& composition_;
+    const porousMixture& composition_;
     PtrList<volScalarField> reactionTerms_;
     List<reaction> reactions_;
 
@@ -51,7 +52,8 @@ private:
     (
         const List<speciesCoeffs>& lhs,
         const List<speciesCoeffs>& rhs, 
-        scalar k
+        scalar k,
+        const phaseFractionField& frac
     );
 
     static scalar reactionOrder(const List<speciesCoeffs>& lhs);
